@@ -8,9 +8,48 @@ namespace Project
     {
         internal class Program
         {
-            
+           static  BusinessLogic_Process blProcess = new BusinessLogic_Process(); 
 
             static void Main(string[] args)
+            {
+                Console.WriteLine("==== ADMIN LOGIN ====");
+
+                const string adminUsername = "user";
+                const string adminPassword = "123";
+
+                int loginAttempts = 3;
+
+                while (loginAttempts > 0)
+                {
+                    Console.Write("Username: ");
+                    string username = Console.ReadLine();
+
+                    Console.Write("Password: ");
+                    string password = Console.ReadLine();
+
+                    if (blProcess.validateAccount(username, password))
+                    {
+                        Console.WriteLine("\nLogin successful!\n");
+                        Users(username, password);
+                        break;
+                    }
+                    else
+                    {
+                        loginAttempts--;
+                        Console.WriteLine($"Invalid credentials. Attempts left: {loginAttempts}\n");
+
+                        if (loginAttempts == 0)
+                        {
+                            Console.WriteLine("Too many failed attempts. Exiting program...");
+                            return;
+                        }
+                    }
+                }
+
+                
+                
+            }
+            public static void Users(string username, string password)
             {
                 Console.WriteLine("WELCOME TO MY TASK MANAGER");
 
@@ -22,10 +61,10 @@ namespace Project
                     switch (userAction)
                     {
                         case 1:
-                            AddTask();
+                            AddTask(username);
                             break;
                         case 2:
-                            ViewTasks();
+                            ViewTasks(username);
                             break;
                         case 3:
                             MarkTaskAsCompleted();
@@ -42,7 +81,6 @@ namespace Project
                     }
                 }
             }
-
             // UI Layer
             static void DisplayMenu()
             {
@@ -69,34 +107,24 @@ namespace Project
                 }
             }
 
-            static void AddTask()
+            static void AddTask(string username)
             {
                 Console.Write("Enter Task: ");
                 string task = Console.ReadLine();
-                process.SaveTask(task);
+                if(blProcess.task(username, task))
                 Console.WriteLine("Task added successfully!");
             }
 
-            static void ViewTasks()
+            static void ViewTasks(string username)
             {
-                if (process.taskCount == 0)
+                if (BusinessLogic_Process.taskCount == 0)
                 {
                     Console.WriteLine("No tasks available.");
                 }
                 else
                 {
                     Console.WriteLine("\nTASK LIST:");
-                    for (int i = 0; i < process.taskCount; i++)
-                    {
-                        if (process.taskStatus[i])
-                        {
-                            Console.WriteLine((i + 1) + ". [Completed] " + process.tasks[i]);
-                        }
-                        else
-                        {
-                            Console.WriteLine((i + 1) + ". [Pending] " + process.tasks[i]);
-                        }
-                    }
+                   
                 }
             }
 
@@ -106,9 +134,9 @@ namespace Project
                 Console.Write("Enter task number to mark as completed: ");
                 int taskNum = GetUserInput();
 
-                if (process.IsValidTaskNumber(taskNum))
+                if (BusinessLogic_Process.IsValidTaskNumber(taskNum))
                 {
-                    process.taskStatus[taskNum - 1] = true;
+                    BusinessLogic_Process.taskStatus[taskNum - 1] = true;
                     Console.WriteLine("Task marked as completed!");
                 }
                 else
@@ -122,9 +150,9 @@ namespace Project
                 Console.Write("Enter task number to delete: ");
                 int taskNum = GetUserInput();
 
-                if (process.IsValidTaskNumber(taskNum))
+                if (BusinessLogic_Process.IsValidTaskNumber(taskNum))
                 {
-                    process.RemoveTask(taskNum - 1);
+                    BusinessLogic_Process.RemoveTask(taskNum - 1);
                     Console.WriteLine("Task deleted successfully!");
                 }
                 else
