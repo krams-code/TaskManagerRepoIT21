@@ -67,10 +67,10 @@ namespace Project
                             ViewTasks(username);
                             break;
                         case 3:
-                            MarkTaskAsCompleted();
+                            MarkTaskAsCompleted(username);
                             break;
                         case 4:
-                            DeleteTask();
+                            DeleteTask(username);
                             break;
                         case 5:
                             Console.WriteLine("Exiting Task Manager...");
@@ -117,27 +117,22 @@ namespace Project
 
             static void ViewTasks(string username)
             {
-                if (BusinessLogic_Process.taskCount == 0)
-                {
-                    Console.WriteLine("No tasks available.");
-                }
-                else
-                {
                     Console.WriteLine("\nTASK LIST:");
-                   
-                }
+                    string tasks = blProcess.GetTask(username);
+                Console.WriteLine(tasks);
             }
 
 
-            static void MarkTaskAsCompleted()
+            static void MarkTaskAsCompleted(string username)
             {
                 Console.Write("Enter task number to mark as completed: ");
                 int taskNum = GetUserInput();
+                
 
-                if (BusinessLogic_Process.IsValidTaskNumber(taskNum))
+                if (blProcess.UpdateTask(taskNum, username))
                 {
-                    BusinessLogic_Process.taskStatus[taskNum - 1] = true;
-                    Console.WriteLine("Task marked as completed!");
+
+                    Console.WriteLine("Task Update successfully!");
                 }
                 else
                 {
@@ -145,14 +140,14 @@ namespace Project
                 }
             }
 
-            static void DeleteTask()
+            static void DeleteTask(string username)
             {
                 Console.Write("Enter task number to delete: ");
                 int taskNum = GetUserInput();
-
-                if (BusinessLogic_Process.IsValidTaskNumber(taskNum))
+               
+                if (blProcess.DeleteTask(taskNum, username))
                 {
-                    BusinessLogic_Process.RemoveTask(taskNum - 1);
+                   
                     Console.WriteLine("Task deleted successfully!");
                 }
                 else

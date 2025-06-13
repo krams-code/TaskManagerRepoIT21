@@ -48,13 +48,20 @@ namespace taskManager_BusinessLogic
         }
         public bool task(string username, string tasks)
         {
-            process.storage(username, tasks);
+            process.AddTask(username, tasks);
             return true;
         }
-        /*public List<string> taskList()
+        public string GetTask(string username)
         {
-           return 
-        }*/
-
+            return process.GetTask(username);
+        }
+        public bool DeleteTask(int index, string username)
+        {
+           return process.DeleteTask(index, username);
+        }
+        public bool UpdateTask(int index, string username)
+        {
+            return process.UpdateTask(index, username);
+        }
     }
 }
